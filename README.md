@@ -7,6 +7,9 @@
 安装依赖
 
 ```shell
+python3 --version
+Python 3.12.6
+
 python3 -m venv venv
 source ./venv/bin/active
 pip install -r requirements.txt
@@ -33,3 +36,17 @@ python3 -m http.server 8080  -d ./html
 ```
 
 访问：http://127.0.0.1:8080/assembly/
+
+将html转为markdown文件
+
+```shell
+# htmltomd.py
+# 修改需要转换的目录
+DIR_NAME = "assembly"
+```
+
+转换
+
+```shell
+python3 htmltomd.py
+```

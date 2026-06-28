@@ -8,7 +8,6 @@ HTML_DIR = os.path.join(RUNTIME_DIR, 'html')
 
 BASE_URL = 'https://www.runoob.com/'
 
-
 def get_filename(url):
     parse_res = urllib.parse.urlparse(url)
     dirname = os.path.dirname(parse_res.path)
@@ -99,4 +98,5 @@ def main(url):
 
 
 if __name__ == '__main__':
-    main()
+    url = 'https://www.runoob.com/assembly/assembly-tutorial.html'
+    main(url)
