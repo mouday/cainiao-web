@@ -15,7 +15,7 @@ source ./venv/bin/active
 pip install -r requirements.txt
 ```
 
-下载一个教程
+## 下载教程
 
 用法：任意找一个教程的页面传入即可，会下载整个集合
 
@@ -36,6 +36,8 @@ python3 -m http.server 8080  -d ./html
 ```
 
 访问：http://127.0.0.1:8080/assembly/
+
+## 转为markdown
 
 将html转为markdown文件
 
