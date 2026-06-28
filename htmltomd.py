@@ -1,3 +1,4 @@
+import sys
 import os
 import shutil
 import html_to_markdown
@@ -8,11 +9,7 @@ RUNTIME_DIR = os.getcwd()
 HTML_DIR = os.path.join(RUNTIME_DIR, "html")
 MD_DIR = os.path.join(RUNTIME_DIR, "markdown")
 
-# 需要转换的目录
-DIR_NAME = "assembly"
-
-
-def pretty_html(xml_str):
+def pretty_html(xml_str, dir_name):
 
     root = html.fromstring(xml_str)
 
@@ -35,7 +32,7 @@ def pretty_html(xml_str):
         target_name = os.path.join("assets", src_name)
         element.set("src", target_name)
         source_file = HTML_DIR + src
-        target_dir = os.path.join(MD_DIR, DIR_NAME, "assets")
+        target_dir = os.path.join(MD_DIR, dir_name, "assets")
         os.makedirs(target_dir, exist_ok=True)
         target_file = os.path.join(target_dir, src_name)
         print(source_file)
@@ -46,9 +43,9 @@ def pretty_html(xml_str):
     return html.tostring(root, encoding="unicode", pretty_print=True)
 
 
-def main():
+def main(dir_name):
 
-    html_dir = os.path.join(HTML_DIR, DIR_NAME)
+    html_dir = os.path.join(HTML_DIR, dir_name)
     for filename in os.listdir(html_dir):
         if filename.endswith(".html"):
             print("filename", filename)
@@ -56,7 +53,7 @@ def main():
             with open(os.path.join(html_dir, filename), "r") as f:
                 content = f.read()
 
-            content = pretty_html(content)
+            content = pretty_html(content, dir_name)
             selector = Selector(text=content)
             content = selector.css('[id="content"]').get()
 
@@ -65,11 +62,11 @@ def main():
             markdown_text = result.content
 
             filename = filename.replace(".html", ".md")
-            target_dir = os.path.join(MD_DIR, DIR_NAME)
+            target_dir = os.path.join(MD_DIR, dir_name)
             os.makedirs(target_dir, exist_ok=True)
             with open(os.path.join(target_dir, filename), "w") as f:
                 f.write(markdown_text)
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1])

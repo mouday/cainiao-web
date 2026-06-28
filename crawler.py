@@ -1,7 +1,25 @@
 import os
+import sys
 import urllib
+import logging
 from parsel import Selector
 import requests
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+file_handler = logging.FileHandler('crawler.log', mode='a', encoding='utf-8')
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(formatter)
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(formatter)
+
+# logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 RUNTIME_DIR = os.getcwd()
 HTML_DIR = os.path.join(RUNTIME_DIR, 'html')
@@ -19,7 +37,7 @@ def get_filename(url):
 
 
 def save_html(url):
-    print("url", url)
+    logger.info(f"url {url}")
     fullname = get_filename(url)
     if os.path.exists(fullname):
         return
@@ -39,7 +57,7 @@ def save_html(url):
 
 
 def save_url(url):
-    print("url", url)
+    logger.info(f"url {url}")
     fullname = get_filename(url)
     if os.path.exists(fullname):
         return
@@ -47,12 +65,8 @@ def save_url(url):
     res = requests.get(url)
     res.raise_for_status()
 
-    if res.headers['Content-Type'] == 'image/png':
-        with open(fullname, 'wb') as f:
-            f.write(res.content)
-    else:
-        with open(fullname, 'w', encoding='utf-8') as f:
-            f.write(res.text)
+    with open(fullname, 'wb') as f:
+        f.write(res.content)
 
 
 def save_static(content):
@@ -62,7 +76,7 @@ def save_static(content):
     for li in selector.css('script'):
         src = li.css('::attr(src)').get()
         if src:
-            print(src)
+            logger.info(src)
             src = urllib.parse.urljoin(BASE_URL, src)
             save_url(src)
 
@@ -70,7 +84,7 @@ def save_static(content):
     for li in selector.css('link[rel="stylesheet"]'):
         src = li.css('::attr(href)').get()
         if src:
-            print(src)
+            logger.info(src)
             src = urllib.parse.urljoin(BASE_URL, src)
             save_url(src)
 
@@ -78,7 +92,7 @@ def save_static(content):
     for li in selector.css('img'):
         src = li.css('::attr(src)').get()
         if src:
-            print(src)
+            logger.info(src)
             src = urllib.parse.urljoin(BASE_URL, src)
             save_url(src)
 
@@ -98,5 +112,4 @@ def main(url):
 
 
 if __name__ == '__main__':
-    url = 'https://www.runoob.com/assembly/assembly-tutorial.html'
-    main(url)
+    main(sys.argv[1])
